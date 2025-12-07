@@ -8,12 +8,15 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
-    origin: 'https://anaylixhub.netlify.app',
-    origin: 'https://anaylixhub.in',
+  origin: [
+    "http://localhost:5173",
+    "https://anaylixhub.netlify.app",
+    "https://anaylixhub.in",
+    "https://www.anaylixhub.in"
+  ],
+  credentials: true
+}));
 
-    credentials: true
-}))
 
 app.use(cookieParser());
 app.use(express.json());
