@@ -21,9 +21,9 @@ const cookieOptions = {
 -------------------------------- */
 authRouter.post("/auth/register", async (req, res) => {
   try {
-    const { fullName, sponserName, sponserId, emailId, password, mobile, state, packages } = req.body;
+    const { fullName, emailId, password, mobile, state } = req.body;
 
-    if (!fullName || !emailId || !password || !mobile || !state || !packages) {
+    if (!fullName || !emailId || !password || !mobile || !state ) {
       return res.status(400).json({ message: "All * fields are required" });
     }
 
@@ -36,13 +36,10 @@ authRouter.post("/auth/register", async (req, res) => {
 
     const newUser = new User({
       fullName,
-      sponserName,
-      sponserId,
       emailId: emailId.toLowerCase(),
       password: passwordHash,
       mobile,
       state,
-      packages,
     });
 
     const savedUser = await newUser.save();

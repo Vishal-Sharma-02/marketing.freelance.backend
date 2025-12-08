@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     state:{
         type:String,
         required:true,
+    },
+    isSubscribed:{
+        type:Boolean,
+        default:false,
     }
 },
 {

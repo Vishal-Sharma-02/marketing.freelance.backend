@@ -1,10 +1,9 @@
 import express from "express";
 import Course from "../models/course.js";
-import Purchase from "../models/purchasedCourse.js";
-import userAuth from "../middleware/auth.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
 const courseRouter = express.Router();
-
 
 // CREATE COURSE
 courseRouter.post("/course/create", async (req, res) => {
@@ -68,23 +67,6 @@ courseRouter.delete("/course/delete/:id", async (req, res) => {
   }
 });
 
-
-// Get all courses purchased by a user
-courseRouter.get("/my-courses/:userId",userAuth, async (req, res) => {
-  try {
-    const purchases = await Purchase.find({ userId: req.params.userId });
-
-    const courseIds = purchases.map((p) => p.courseId);
-
-    const courses = await Course.find({ _id: { $in: courseIds } });
-
-    res.json(courses);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to fetch purchased courses" });
-  }
-});
-
 // GET SINGLE COURSE
 courseRouter.get("/course/:id", async (req, res) => {
   try {
@@ -97,6 +79,5 @@ courseRouter.get("/course/:id", async (req, res) => {
     res.status(500).json({ message: "Error fetching course" });
   }
 });
-
 
 export default courseRouter;
