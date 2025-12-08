@@ -1,10 +1,10 @@
-const express = require("express")
-const {userAuth} = require("../middleware/auth")
-const razorpayInstance = require("../utils/razorpay")
-const Payment  = require("../models/payment");
-const { subscriptionAmount } = require("../utils/constants");
-const {validateWebhookSignature} = require("razorpay/dist/utils/razorpay-utils");
-const User = require("../models/user");
+import express from "express";
+import userAuth  from "../middleware/auth.js";
+import razorpayInstance from "../utils/razorpay.js";
+import Payment from "../models/payment.js";
+import  subscriptionAmount from "../utils/constants.js";
+import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils.js";
+import User from "../models/user.js";
 
 const paymentRouter = express.Router();
 
@@ -112,4 +112,4 @@ paymentRouter.get("/premium/verify", userAuth, async (req, res) => {
 });
  
  
-module.exports = {paymentRouter};
+export default paymentRouter;

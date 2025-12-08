@@ -1,2 +1,2 @@
-const  subscriptionAmount =1;
-module.exports={subscriptionAmount};
+const subscriptionAmount = 1;
+export default subscriptionAmount;

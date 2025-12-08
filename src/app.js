@@ -17,6 +17,7 @@ app.use(cors({
   credentials: true
 }));
 
+app.set("trust proxy", 1);
 
 app.use(cookieParser());
 app.use(express.json());
@@ -24,10 +25,12 @@ app.use(express.json());
 import authRouter from './routes/auth.js';
 import profileRouter from './routes/profile.js';
 import courseRouter from "./routes/course.js";
+import paymentRouter from "./routes/payment.js";
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",courseRouter);
+app.use("/",paymentRouter);
 
 const server = http.createServer(app);
 
