@@ -4,6 +4,8 @@ import express from 'express';
 import cors from  'cors';
 import http from  'http';
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import { webhookHandler } from "./routes/payment.js";
 dotenv.config();
 const app = express();
 
@@ -16,6 +18,12 @@ app.use(cors({
   ],
   credentials: true
 }));
+
+app.post(
+  "/payment/webhook",
+  bodyParser.raw({ type: "application/json" }),
+  webhookHandler
+);
 
 app.set("trust proxy", 1);
 

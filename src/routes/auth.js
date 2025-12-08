@@ -42,7 +42,6 @@ authRouter.post("/auth/register", async (req, res) => {
       mobile,
       state,
     });
-
     const token = await newUser.getJWT();
     res.cookie("token", token, cookieOptions);
 
