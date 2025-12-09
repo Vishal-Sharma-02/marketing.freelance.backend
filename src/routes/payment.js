@@ -5,6 +5,9 @@ import Payment from "../models/payment.js";
 import subscriptionAmount from "../utils/constants.js";
 import { validateWebhookSignature } from "razorpay/dist/utils/razorpay-utils.js";
 import User from "../models/user.js";
+import { sendEmail } from "../utils/emailService.js";
+import { paymentSuccessEmail } from "../emails/paymentSuccess.js";
+
 
 const router = express.Router();
 
@@ -85,6 +88,41 @@ export const webhookHandler = async (req, res) => {
     await User.findByIdAndUpdate(payment.userId, {
       isSubscribed: true,
     });
+
+    if (event !== "payment.captured") {
+  return res.status(200).send("Event ignored");
+}
+
+// Update payment record
+await Payment.findOneAndUpdate(
+  { orderId: paymentDetails.order_id },
+  {
+    status: paymentDetails.status,
+    paymentId: paymentDetails.id
+  }
+);
+
+// Get payment record
+const isPayment = await Payment.findOne({ orderId: paymentDetails.order_id });
+
+// Update user subscription
+await User.findByIdAndUpdate(isPayment.userId, {
+  isSubscribed: true
+});
+
+// 📩 Send Payment Confirmation Email
+const user = await User.findById(isPayment.userId);
+console.log(user.emailId,"pay");
+
+sendEmail(
+  user.emailId,
+  "Payment Successful ✔",
+  paymentSuccessEmail(
+    user.fullName,
+    paymentDetails.order_id,
+    paymentDetails.amount
+  )
+);
 
     return res.status(200).send("OK");
   } catch (err) {

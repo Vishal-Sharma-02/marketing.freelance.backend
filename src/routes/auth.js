@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.js";
+import { sendEmail } from "../utils/emailService.js";
+import { welcomeEmail } from "../emails/welcomeEmail.js";
 
 const authRouter = express.Router();
 
@@ -49,6 +51,14 @@ authRouter.post("/auth/register", async (req, res) => {
     delete safeUser.password;
 
     // 👇 FIXED: return in same way as login
+    console.log(newUser.emailId , "welcome email sent to");
+    
+    sendEmail(
+  newUser.emailId,
+  "Welcome to AnaylixHub 🎉",
+  welcomeEmail(newUser.fullName)
+);
+
     res.status(201).json({
       message: "User registered successfully",
       user: safeUser,
