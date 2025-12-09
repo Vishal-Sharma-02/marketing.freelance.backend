@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import { sendEmail } from "../utils/emailService.js";
 import { welcomeEmail } from "../emails/welcomeEmail.js";
+import { otpEmail } from "../emails/otpEmails.js";
 
 const authRouter = express.Router();
 
@@ -49,15 +50,12 @@ authRouter.post("/auth/register", async (req, res) => {
 
     const safeUser = newUser.toObject();
     delete safeUser.password;
-
-    // 👇 FIXED: return in same way as login
-    console.log(newUser.emailId , "welcome email sent to");
     
-    sendEmail(
-  newUser.emailId,
+ sendEmail(
+  safeUser.emailId,
   "Welcome to AnaylixHub 🎉",
-  welcomeEmail(newUser.fullName)
-);
+  welcomeEmail(safeUser.fullName)
+); 
 
     res.status(201).json({
       message: "User registered successfully",
@@ -92,7 +90,7 @@ authRouter.post("/auth/login", async (req, res) => {
 
     const safeUser = user.toObject();
     delete safeUser.password;
-
+    
     res.status(200).json({
       message: "Login successful",
       user: safeUser,
@@ -119,5 +117,81 @@ authRouter.get("/auth/logout", (req, res) => {
     res.status(500).json({ message: "Logout failed", error: err.message });
   }
 });
+
+//forget password api:
+
+authRouter.post("/auth/forgot-password", async (req, res) => {
+  try {
+    const { emailId } = req.body;
+
+    const user = await User.findOne({ emailId: emailId.toLowerCase() });
+    if (!user) return res.status(400).json({ message: "Email not found" });
+
+    // generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpiresAt = Date.now() + 10 * 60 * 1000; // 10 min
+
+    await user.save();
+
+    // send email
+    sendEmail(
+      user.emailId,
+      "Reset Your Password – OTP",
+      otpEmail(user.fullName, otp)
+    );
+
+    res.json({ message: "OTP Sent Successfully" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+});
+
+authRouter.post("/auth/verify-otp", async (req, res) => {
+  try {
+    const { emailId, otp } = req.body;
+
+    const user = await User.findOne({ emailId: emailId.toLowerCase() });
+    if (!user) return res.status(400).json({ message: "Email not found" });
+
+    if (user.otp !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    if (Date.now() > user.otpExpiresAt)
+      return res.status(400).json({ message: "OTP expired" });
+
+    // OTP correct
+    res.json({ message: "OTP Verified Successfully" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+});
+
+authRouter.post("/auth/reset-password", async (req, res) => {
+  try {
+    const { emailId, newPassword } = req.body;
+
+    const user = await User.findOne({ emailId: emailId.toLowerCase() });
+    if (!user) return res.status(400).json({ message: "Email not found" });
+
+    // reset password
+    const hashed = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashed;
+    user.otp = null;
+    user.otpExpiresAt = null;
+
+    await user.save();
+
+    res.json({ message: "Password Reset Successful" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+});
+
 
 export default authRouter;

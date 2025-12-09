@@ -68,69 +68,53 @@ export const webhookHandler = async (req, res) => {
     const event = data.event;
     const paymentDetails = data.payload.payment.entity;
 
+    // Only process successful captured payments
     if (event !== "payment.captured") {
-      return res.status(200).send("Ignored");
+      return res.status(200).send("Event ignored");
     }
 
-    // Update payment record
+    // 1️⃣ Update payment record
     const payment = await Payment.findOneAndUpdate(
       { orderId: paymentDetails.order_id },
       {
         status: paymentDetails.status,
-        paymentId: paymentDetails.id,
+        paymentId: paymentDetails.id
       },
       { new: true }
     );
 
-    if (!payment) return res.status(200).send("Payment record not found");
+    if (!payment) {
+      return res.status(200).send("Payment record not found");
+    }
 
-    // Update user subscription
+    // 2️⃣ Update user subscription
     await User.findByIdAndUpdate(payment.userId, {
-      isSubscribed: true,
+      isSubscribed: true
     });
+    
+    // 3️⃣ Send Confirmation Email
+    const user = await User.findById(payment.userId);
 
-    if (event !== "payment.captured") {
-  return res.status(200).send("Event ignored");
-}
-
-// Update payment record
-await Payment.findOneAndUpdate(
-  { orderId: paymentDetails.order_id },
-  {
-    status: paymentDetails.status,
-    paymentId: paymentDetails.id
-  }
-);
-
-// Get payment record
-const isPayment = await Payment.findOne({ orderId: paymentDetails.order_id });
-
-// Update user subscription
-await User.findByIdAndUpdate(isPayment.userId, {
-  isSubscribed: true
-});
-
-// 📩 Send Payment Confirmation Email
-const user = await User.findById(isPayment.userId);
-console.log(user.emailId,"pay");
-
-sendEmail(
-  user.emailId,
-  "Payment Successful ✔",
-  paymentSuccessEmail(
-    user.fullName,
-    paymentDetails.order_id,
-    paymentDetails.amount
-  )
-);
+    console.log(user);
+    
+    if (user) {
+      sendEmail(
+        user.emailId,
+        "Payment Successful ✔",
+        paymentSuccessEmail(
+          user.fullName,
+          paymentDetails.order_id,
+          paymentDetails.amount
+        )
+      );
+    }
 
     return res.status(200).send("OK");
   } catch (err) {
-    console.log(err);
+    console.log("Webhook Error:", err);
     return res.status(500).send("Webhook Error");
   }
 };
-
 /* ============================================================
    3) PREMIUM VERIFY (Frontend polls subscription status)
    ============================================================ */

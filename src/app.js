@@ -1,12 +1,13 @@
 import cookieParser from "cookie-parser";
 import db from './config/database.js';
-import express from 'express';
 import cors from  'cors';
 import http from  'http';
 import dotenv from "dotenv";
+dotenv.config();
+import express from 'express';
 import bodyParser from "body-parser";
 import { webhookHandler } from "./routes/payment.js";
-dotenv.config();
+
 const app = express();
 
 app.use(cors({

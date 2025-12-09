@@ -7,7 +7,6 @@ export const welcomeEmail = (name) => `
     <p>You now have access to:</p>
     <ul>
       <li>Premium Digital Skills</li>
-      <li>Lifetime Access to Courses</li>
       <li>Professional Learning Path</li>
     </ul>
 

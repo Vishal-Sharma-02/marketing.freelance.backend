@@ -40,7 +40,18 @@ const userSchema = new mongoose.Schema({
     isSubscribed:{
         type:Boolean,
         default:false,
-    }
+    },
+    
+     /* OTP + Reset Password Fields*/
+    otp: {
+        type: String,
+        default: null
+    },
+    otpExpiresAt: {
+        type: Date,
+        default: null
+    },
+
 },
 {
     timestamps:true
