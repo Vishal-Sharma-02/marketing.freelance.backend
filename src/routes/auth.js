@@ -17,7 +17,7 @@ const cookieOptions = {
   secure: isProduction,               // Must be false on localhost
   sameSite: isProduction ? "none" : "lax",
   path: "/",
-  maxAge: 1000 * 60 * 60 * 24 * 7,    // 7 days
+  maxAge: 1000 * 60 * 60 * 24 * 30,    // 7 days
 };
 
 /** -------------------------------------

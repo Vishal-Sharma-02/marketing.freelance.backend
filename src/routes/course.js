@@ -2,11 +2,13 @@ import express from "express";
 import Course from "../models/course.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import  userAuth from "../middleware/auth.js";
+import authAdmin from "../middleware/authAdmin.js";
 
 const courseRouter = express.Router();
 
 // CREATE COURSE
-courseRouter.post("/course/create", async (req, res) => {
+courseRouter.post("/course/create", userAuth, authAdmin, async (req, res) => {
   try {
     const course = new Course(req.body);
 
@@ -36,7 +38,7 @@ courseRouter.get("/course/all", async (req, res) => {
 
 
 // UPDATE COURSE
-courseRouter.put("/course/update/:id", async (req, res) => {
+courseRouter.put("/course/update/:id", userAuth, authAdmin, async (req, res) => {
   try {
     const updatedCourse = await Course.findByIdAndUpdate(
       req.params.id,
@@ -58,7 +60,7 @@ courseRouter.put("/course/update/:id", async (req, res) => {
 });
 
 // DELETE COURSE
-courseRouter.delete("/course/delete/:id", async (req, res) => {
+courseRouter.delete("/course/delete/:id", userAuth, authAdmin, async (req, res) => {
   try {
     await Course.findByIdAndDelete(req.params.id);
     res.json({ message: "Course deleted" });
