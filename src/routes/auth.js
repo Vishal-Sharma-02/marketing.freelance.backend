@@ -48,8 +48,14 @@ authRouter.post("/auth/register", async (req, res) => {
     const token = await newUser.getJWT();
     res.cookie("token", token, cookieOptions);
 
-    const safeUser = newUser.toObject();
-    delete safeUser.password;
+    const safeUser = {
+      _id: newUser._id,
+      fullName: newUser.fullName,
+      emailId: newUser.emailId,
+      mobile: newUser.mobile,
+      state: newUser.state,
+      createdAt: newUser.createdAt,
+    };
     
  sendEmail(
   safeUser.emailId,
@@ -88,8 +94,14 @@ authRouter.post("/auth/login", async (req, res) => {
 
     res.cookie("token", token, cookieOptions);
 
-    const safeUser = user.toObject();
-    delete safeUser.password;
+    const safeUser = {
+      _id: user._id,
+      fullName: user.fullName,
+      emailId: user.emailId,
+      mobile: user.mobile,
+      state: user.state,
+      createdAt: user.createdAt,
+    };
     
     res.status(200).json({
       message: "Login successful",
@@ -105,7 +117,7 @@ authRouter.post("/auth/login", async (req, res) => {
  *  LOGOUT USER
  * --------------------------------------*/
 authRouter.get("/auth/logout", (req, res) => {
-  try {
+  try {    
     res.cookie("token", "", {
       ...cookieOptions,
       maxAge: 0,

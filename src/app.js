@@ -36,13 +36,14 @@ import profileRouter from './routes/profile.js';
 import courseRouter from "./routes/course.js";
 import paymentRouter from "./routes/payment.js";
 import contactRouter from "./routes/contact.js";
-
+import webinarRouter from "./routes/webinar.js";
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",courseRouter);
 app.use("/",paymentRouter);
-app.use("/contact", contactRouter);
+app.use("/", contactRouter);
+app.use("/", webinarRouter);
 
 const server = http.createServer(app);
 

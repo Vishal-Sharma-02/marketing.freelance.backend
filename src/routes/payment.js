@@ -95,7 +95,6 @@ export const webhookHandler = async (req, res) => {
     // 3️⃣ Send Confirmation Email
     const user = await User.findById(payment.userId);
 
-    console.log(user);
     
     if (user) {
       sendEmail(
