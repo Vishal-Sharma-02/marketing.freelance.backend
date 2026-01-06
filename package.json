@@ -25,6 +25,7 @@
     "razorpay": "^2.9.6",
     "resend": "^6.6.0",
     "slugify": "^1.6.6",
+    "ua-parser-js": "^2.0.7",
     "validator": "^13.15.23"
   }
 }

@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true,
         minLength:10,
-        maxLength:15,
+        maxLength:10,
         trim:true,
         unique:true,
     },
@@ -41,6 +41,26 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
     },
+
+   /*Last Login */
+  lastLogin: {
+    type: Date,
+    default: null
+  },
+
+/*Login History */
+  loginHistory: [
+    {
+      loggedInAt: {
+        type: Date,
+        default: Date.now
+      },
+      device: {
+        type: String,
+        trim: true
+      }
+    }
+  ],
     
      /* OTP + Reset Password Fields*/
     otp: {

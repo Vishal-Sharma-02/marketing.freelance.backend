@@ -4,6 +4,7 @@ import User from "../models/user.js";
 import { sendEmail } from "../utils/emailService.js";
 import { welcomeEmail } from "../emails/welcomeEmail.js";
 import { otpEmail } from "../emails/otpEmails.js";
+import {UAParser} from "ua-parser-js";
 
 const authRouter = express.Router();
 
@@ -31,12 +32,21 @@ authRouter.post("/auth/register", async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const existingUser = await User.findOne({ emailId: emailId.toLowerCase() });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    const existingUserMail = await User.findOne({ emailId: emailId.toLowerCase() });
+    if (existingUserMail) {
+      return res.status(400).json({ message: "User already exists with this email, Login!!" });
+    }
+    const existingUserMobile = await User.findOne({ mobile: mobile });
+    if (existingUserMobile) {
+      return res.status(400).json({ message: "User already exists with this mobile number, Login!!" });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+
+    const parser = new UAParser(req.headers["user-agent"]);
+const deviceInfo = parser.getResult();
+
+const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser.name || "Unknown Browser"}`;
 
     const newUser = await User.create({
       fullName,
@@ -44,7 +54,14 @@ authRouter.post("/auth/register", async (req, res) => {
       password: passwordHash,
       mobile,
       state,
+      lastLogin: new Date(),
+      loginHistory: [
+        {
+          device: deviceName
+        }
+      ]
     });
+
     const token = await newUser.getJWT();
     res.cookie("token", token, cookieOptions);
 
@@ -90,6 +107,22 @@ authRouter.post("/auth/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
 
+    const parser = new UAParser(req.headers["user-agent"]);
+const deviceInfo = parser.getResult();
+
+const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${
+  deviceInfo.browser.name || "Unknown Browser"
+}`;
+
+user.lastLogin = new Date();
+user.loginHistory.push({ device: deviceName });
+
+if (user.loginHistory.length > 5) {
+  user.loginHistory.shift();
+}
+
+await user.save();
+
     const token = await user.getJWT();
 
     res.cookie("token", token, cookieOptions);
@@ -107,6 +140,7 @@ authRouter.post("/auth/login", async (req, res) => {
       message: "Login successful",
       user: safeUser,
     });
+
 
   } catch (err) {
     res.status(500).json({ message: "Server Error", error: err.message });
