@@ -239,5 +239,8 @@ authRouter.post("/auth/reset-password", async (req, res) => {
   }
 });
 
+authRouter.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 export default authRouter;
