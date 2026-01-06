@@ -83,6 +83,7 @@ const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser
     res.status(201).json({
       message: "User registered successfully",
       user: safeUser,
+      token
     });
 
   } catch (err) {
@@ -126,6 +127,7 @@ await user.save();
     const token = await user.getJWT();
 
     res.cookie("token", token, cookieOptions);
+    // console.log(isProduction, cookieOptions);
 
     const safeUser = {
       _id: user._id,
@@ -139,6 +141,7 @@ await user.save();
     res.status(200).json({
       message: "Login successful",
       user: safeUser,
+      token
     });
 
 
@@ -151,18 +154,23 @@ await user.save();
  *  LOGOUT USER
  * --------------------------------------*/
 authRouter.get("/auth/logout", (req, res) => {
-  try {    
-    res.cookie("token", "", {
+  try {
+    res.clearCookie("token", {
       ...cookieOptions,
       maxAge: 0,
     });
 
-    res.status(200).json({ message: "Logged out successfully" });
-
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
   } catch (err) {
-    res.status(500).json({ message: "Logout failed", error: err.message });
+    res.status(500).json({
+      message: "Logout failed",
+      error: err.message,
+    });
   }
 });
+
 
 //forget password api:
 
