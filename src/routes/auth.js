@@ -61,6 +61,8 @@ const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser
         }
       ]
     });
+    console.log("resgister");
+    
 
     const token = await newUser.getJWT();
     res.cookie("token", token, cookieOptions);
@@ -80,6 +82,7 @@ const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser
   welcomeEmail(safeUser.fullName)
 ); 
 
+console.log("Registration Successful: ", safeUser.emailId);
     res.status(201).json({
       message: "User registered successfully",
       user: safeUser,
@@ -123,12 +126,13 @@ if (user.loginHistory.length > 5) {
 }
 
 await user.save();
+console.log("Login S");
 
     const token = await user.getJWT();
 
     res.cookie("token", token, cookieOptions);
     // console.log(isProduction, cookieOptions);
-
+ 
     const safeUser = {
       _id: user._id,
       fullName: user.fullName,
@@ -138,6 +142,7 @@ await user.save();
       createdAt: user.createdAt,
     };
     
+    console.log("Login Successful: ", safeUser.emailId);
     res.status(200).json({
       message: "Login successful",
       user: safeUser,
