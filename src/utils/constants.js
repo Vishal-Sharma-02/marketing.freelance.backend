@@ -1,2 +1,2 @@
-const subscriptionAmount = 3499;
+const subscriptionAmount = 1499;
 export default subscriptionAmount;
