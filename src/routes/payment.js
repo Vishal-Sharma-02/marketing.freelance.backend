@@ -11,9 +11,7 @@ import { paymentSuccessEmail } from "../emails/paymentSuccess.js";
 
 const router = express.Router();
 
-/* ============================================================
-   1) CREATE ORDER (User Initiates Payment)
-   ============================================================ */
+/* 1) CREATE ORDER (User Initiates Payment)*/
 router.post("/payment/create", userAuth, async (req, res) => {
   try {
     const user = req.user;
@@ -48,9 +46,7 @@ router.post("/payment/create", userAuth, async (req, res) => {
   }
 });
 
-/* ============================================================
-   2) WEBHOOK HANDLER (Razorpay Calls This)
-   ============================================================ */
+/* 2) WEBHOOK HANDLER (Razorpay Calls This)*/
 export const webhookHandler = async (req, res) => {
   try {
     const signature = req.headers["x-razorpay-signature"];
@@ -114,9 +110,9 @@ export const webhookHandler = async (req, res) => {
     return res.status(500).send("Webhook Error");
   }
 };
-/* ============================================================
-   3) PREMIUM VERIFY (Frontend polls subscription status)
-   ============================================================ */
+
+
+/* 3) PREMIUM VERIFY (Frontend polls subscription status) */
 router.get("/premium/verify", userAuth, async (req, res) => {
   try {
     const user = req.user;

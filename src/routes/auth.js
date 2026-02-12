@@ -7,20 +7,6 @@ import { otpEmail } from "../emails/otpEmails.js";
 import {UAParser} from "ua-parser-js";
 
 const authRouter = express.Router();
-
-const isProduction = process.env.NODE_ENV === "production";
-
-/** -------------------------------------
- * COOKIE OPTIONS (WORKS IN LOCAL + PROD)
- * --------------------------------------*/
-const cookieOptions = {
-  httpOnly: true,
-  secure: isProduction,               // Must be false on localhost
-  sameSite: isProduction ? "none" : "lax",
-  path: "/",
-  maxAge: 1000 * 60 * 60 * 24 * 30,    // 7 days
-};
-
 /** -------------------------------------
  *  REGISTER USER
  * --------------------------------------*/
@@ -63,7 +49,6 @@ const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser
     });    
 
     const token = await newUser.getJWT();
-    res.cookie("token", token, cookieOptions);
 
     const safeUser = {
       _id: newUser._id,
@@ -125,8 +110,6 @@ if (user.loginHistory.length > 5) {
 await user.save();
 
     const token = await user.getJWT();
-
-    res.cookie("token", token, cookieOptions);
  
     const safeUser = {
       _id: user._id,
@@ -155,21 +138,17 @@ await user.save();
  * --------------------------------------*/
 authRouter.get("/auth/logout", (req, res) => {
   try {
-    res.clearCookie("token", {
-      ...cookieOptions,
-      maxAge: 0,
-    });
-
     res.status(200).json({
       message: "Logged out successfully",
     });
   } catch (err) {
     res.status(500).json({
       message: "Logout failed",
-      error: err.message,
+      error: err.message, 
     });
   }
 });
+
 
 
 //forget password api:
