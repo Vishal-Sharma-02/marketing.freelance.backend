@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const db = async()=>{
+    console.log("Connecting to database...");
     await mongoose.connect(process.env.DATABASE_SECRET_KEY);    
 }
 

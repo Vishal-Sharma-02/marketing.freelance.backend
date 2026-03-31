@@ -35,7 +35,9 @@ const courseSchema = new mongoose.Schema(
         "Digital Marketing",
         "Graphic Design",
         "Data Science",
-        "Other"
+        "Digital Product Business Guide",
+        "Digital Product Course",
+        "Script Writing",
       ],
       required: true,
     },
@@ -59,7 +61,7 @@ const courseSchema = new mongoose.Schema(
       default: "draft",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Course", courseSchema);

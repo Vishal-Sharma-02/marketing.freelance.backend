@@ -97,8 +97,9 @@ const deviceName = `${deviceInfo.os.name || "Unknown OS"} - ${deviceInfo.browser
 authRouter.post("/auth/login", async (req, res) => {
   try {
     const { emailId, password } = req.body;
-
+    console.log("Login Attempt:----> ", req.body);
     const user = await User.findOne({ emailId: emailId.toLowerCase() });
+    console.log("User Found: ", user ? user.emailId : "No user found");
     if (!user) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
