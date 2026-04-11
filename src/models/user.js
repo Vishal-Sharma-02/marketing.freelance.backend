@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        minLength:8,
+        minLength:4,
     },
     mobile:{
         type:String,
