@@ -35,8 +35,6 @@ courseRouter.get("/course/all", async (req, res) => {
   }
 });
 
-
-
 // UPDATE COURSE
 courseRouter.put("/course/update/:id", userAuth, authAdmin, async (req, res) => {
   try {
