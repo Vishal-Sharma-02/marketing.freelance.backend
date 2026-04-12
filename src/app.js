@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from 'express';
 import bodyParser from "body-parser";
-import { webhookHandler } from "./routes/payment.js";
+import { webhookHandler } from "./routes/paymentRoute.js";
 
 const app = express();
 
@@ -33,10 +33,10 @@ app.use(express.json());
 
 import authRouter from './routes/authRoute.js';
 import userRouter from './routes/userRoute.js';
-import courseRouter from "./routes/course.js";
-import paymentRouter from "./routes/payment.js";
-import contactRouter from "./routes/contact.js";
-import webinarRouter from "./routes/webinar.js";
+import courseRouter from "./routes/courseRoute.js";
+import paymentRouter from "./routes/paymentRoute.js";
+import contactRouter from "./routes/contactRoute.js";
+import webinarRouter from "./routes/webinarRoute.js";
 
 app.use("/",authRouter);
 app.use("/",userRouter);
