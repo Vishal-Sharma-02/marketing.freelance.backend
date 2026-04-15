@@ -18,7 +18,7 @@ courseRouter.post(
   createCourse
 );
 
-courseRouter.get("/course/all", getAllCourses);
+courseRouter.get("/course/", getAllCourses);
 courseRouter.get("/course/:id", getCourseById);
 courseRouter.patch(
   "/course/update/:id",

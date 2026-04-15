@@ -4,9 +4,9 @@ import { sendError } from "../utils/response.js";
 const searchAllowedPattern = /^[\w\s@.+-]*$/;
 
 export const validateUpdateUser = (req, res, next) => {
-  const { fullName, emailId, mobile, state, role } = req.body;
+  const { fullName, emailId, mobile, state, role , isSubscribed} = req.body;
 
-  if (!fullName && !emailId && !mobile && !state && role === undefined) {
+  if (!fullName && !emailId && !mobile && !state && role === undefined && isSubscribed === undefined) {
     return sendError(res, "Invalid request", "No fields provided to update", 400);
   }
 

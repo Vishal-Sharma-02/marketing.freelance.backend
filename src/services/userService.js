@@ -9,6 +9,7 @@ const createSafeUser = (user) => ({
   mobile: user.mobile,
   state: user.state,
   role: user.role,
+  subscribed: user.isSubscribed,
   createdAt: user.createdAt,
 });
 
