@@ -1,7 +1,7 @@
 import express from "express";
 import { authenticate } from "../middleware/authMiddleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
-import { validateGetUsersQuery, validateUserIdParam, validateUpdateUser } from "../validators/userValidator.js";
+import { validateGetUsersQuery, validateUserIdParam, validateUpdateUser, validateUpdateProfile } from "../validators/userValidator.js";
 import {
   profile,
   getUsers,
@@ -13,9 +13,9 @@ import {
 const userRouter = express.Router();
 
 userRouter.get("/user/profile", authenticate, authorizeRoles("user", "admin"), profile);
-userRouter.patch("/user/update", authenticate, authorizeRoles("user", "admin"), validateUpdateUser, updateProfile);
+userRouter.patch("/user", authenticate, authorizeRoles("user", "admin"), validateUpdateProfile, updateProfile);
 userRouter.patch(
-  "/user/update/:id",
+  "/user/:id",
   authenticate,
   authorizeRoles("admin"),
   validateUserIdParam,

@@ -56,8 +56,8 @@ const getUsers = async (query) => {
 };
 
 const buildUpdatePayload = (updates, allowRole = false) => {
-  const allowedFields = ["fullName", "emailId", "mobile", "state","isSubscribed"];
-  if (allowRole) allowedFields.push("role");  
+  const allowedFields = ["fullName", "emailId", "mobile", "state"];
+  if (allowRole) allowedFields.push("role", "isSubscribed");
 
   const payload = {};
   allowedFields.forEach((field) => {

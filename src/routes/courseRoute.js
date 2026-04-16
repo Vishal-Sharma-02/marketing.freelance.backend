@@ -21,13 +21,13 @@ courseRouter.post(
 courseRouter.get("/course/", getAllCourses);
 courseRouter.get("/course/:id", getCourseById);
 courseRouter.patch(
-  "/course/update/:id",
+  "/course/:id",
   authenticate,
   authorizeRoles("admin"),
   updateCourse
 );
 courseRouter.delete(
-  "/course/delete/:id",
+  "/course/:id",
   authenticate,
   authorizeRoles("admin"),
   deleteCourse
