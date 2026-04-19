@@ -30,13 +30,6 @@ if (missingEnvVars.length) {
 const app = express();
 
 app.use(helmet());
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-}));
-
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -45,6 +38,12 @@ app.use(cors({
     "https://www.anaylixhub.in"
   ],
   credentials: true
+}));
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: true,
 }));
 
 app.post(

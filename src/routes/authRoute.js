@@ -29,4 +29,4 @@ authRouter.post("/auth/verify-otp", validateEmailOtp, verifyOtpController);
 authRouter.post("/auth/reset-password", validateResetPassword, resetPasswordController);
 authRouter.get("/health", healthCheck);
 
-export default authRouter;
+export default authRouter;  
