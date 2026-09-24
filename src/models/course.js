@@ -51,6 +51,12 @@ const courseSchema = new mongoose.Schema(
 
     duration: { type: String, required: true },
 
+    mode: {
+      type: String,
+      enum: ["Hindi", "English"],
+      default: "Hindi",
+    },
+
     totalLectures: { type: Number, default: 0 },
 
     modules: [moduleSchema],
